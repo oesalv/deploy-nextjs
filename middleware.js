@@ -11,7 +11,7 @@ export function middleware(request) {
   );
 
   if (isProtected && !token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/signin", request.url));
   }
 
   return NextResponse.next();
