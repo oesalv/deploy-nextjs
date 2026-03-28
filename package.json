@@ -14,9 +14,10 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "@prisma/client": "^5.0.0"
+    "mysql2": "^3.11.3"
   },
   "devDependencies": {
     "prisma": "^5.0.0"
   }
 }
-"mysql2": "^3.11.3"
+
