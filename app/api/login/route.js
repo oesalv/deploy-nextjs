@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import { prisma } from "../../../lib/prisma";
+import { getDb } from "../../../lib/db";
 import { hashPassword, verifyPassword } from "../../../lib/password";
 
 export async function POST(request) {
@@ -17,9 +17,14 @@ export async function POST(request) {
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+    const db = getDb();
+
+    const [rows] = await db.execute(
+      "SELECT id, name, email, passwordHash, role, isActive FROM User WHERE email = ? LIMIT 1",
+      [email]
+    );
+
+    const user = rows[0];
 
     if (!user) {
       return NextResponse.json(
@@ -35,13 +40,6 @@ export async function POST(request) {
       );
     }
 
-    if (!user.passwordHash) {
-      return NextResponse.json(
-        { error: "Brukeren mangler passord i databasen." },
-        { status: 500 }
-      );
-    }
-
     const result = verifyPassword(password, user.passwordHash);
 
     if (!result.ok) {
@@ -52,12 +50,12 @@ export async function POST(request) {
     }
 
     if (result.needsUpgrade) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          passwordHash: hashPassword(password),
-        },
-      });
+      const newHash = hashPassword(password);
+
+      await db.execute(
+        "UPDATE User SET passwordHash = ? WHERE id = ?",
+        [newHash, user.id]
+      );
     }
 
     return NextResponse.json({
