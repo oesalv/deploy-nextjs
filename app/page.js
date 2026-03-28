@@ -1,14 +1,18 @@
-export default function HomePage() {
+export default function Home() {
   return (
-    <main style={{ maxWidth: 720, margin: '80px auto', padding: '0 20px' }}>
-      <h1>Next.js on Hostinger Node.js web apps hosting</h1>
-      <p>
-        This repository is a reference template showing the baseline setup for deploying
-        a Next.js application on Hostinger Node.js web apps hosting.
-      </p>
-      <p>
-        Run <code>npm run build</code> and deploy with start command <code>npm run start -- -p $PORT</code>.
-      </p>
+    <main style={{ padding: "40px", fontFamily: "Arial, sans-serif" }}>
+      <h1>Min første moderne nettside</h1>
+      <p>Denne kjører med Node.js og Next.js på Hostinger.</p>
+
+      <section style={{ marginTop: "30px" }}>
+        <h2>Dette skal jeg lære</h2>
+        <ul>
+          <li>Next.js</li>
+          <li>API-ruter</li>
+          <li>Database</li>
+          <li>Innlogging</li>
+        </ul>
+      </section>
     </main>
-  )
+  );
 }
