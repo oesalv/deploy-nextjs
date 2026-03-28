@@ -2,7 +2,6 @@ export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
-import { createSession } from "../../../lib/auth";
 import { hashPassword, verifyPassword } from "../../../lib/password";
 
 export async function POST(request) {
@@ -47,8 +46,6 @@ export async function POST(request) {
       });
     }
 
-    await createSession(user.id);
-
     return NextResponse.json({
       ok: true,
       user: {
@@ -59,7 +56,7 @@ export async function POST(request) {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("LOGIN ERROR:", error);
     return NextResponse.json(
       { error: "Noe gikk galt ved innlogging." },
       { status: 500 }
