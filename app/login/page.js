@@ -32,8 +32,8 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/dashboard");
-      router.refresh();
+      alert("Innlogging virker!");
+setLoading(false);
     } catch (err) {
       setError("Noe gikk galt.");
       setLoading(false);
