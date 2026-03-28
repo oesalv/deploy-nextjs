@@ -21,10 +21,24 @@ export async function POST(request) {
       where: { email },
     });
 
-    if (!user || !user.isActive) {
+    if (!user) {
       return NextResponse.json(
-        { error: "Ugyldig innlogging." },
-        { status: 401 }
+        { error: "Bruker ikke funnet." },
+        { status: 404 }
+      );
+    }
+
+    if (!user.isActive) {
+      return NextResponse.json(
+        { error: "Brukeren er deaktivert." },
+        { status: 403 }
+      );
+    }
+
+    if (!user.passwordHash) {
+      return NextResponse.json(
+        { error: "Brukeren mangler passord i databasen." },
+        { status: 500 }
       );
     }
 
@@ -32,7 +46,7 @@ export async function POST(request) {
 
     if (!result.ok) {
       return NextResponse.json(
-        { error: "Ugyldig innlogging." },
+        { error: "Feil passord." },
         { status: 401 }
       );
     }
@@ -48,6 +62,7 @@ export async function POST(request) {
 
     return NextResponse.json({
       ok: true,
+      message: "Innlogging virker!",
       user: {
         id: user.id,
         name: user.name,
@@ -57,8 +72,12 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error("LOGIN ERROR:", error);
+
     return NextResponse.json(
-      { error: "Noe gikk galt ved innlogging." },
+      {
+        error: "Noe gikk galt ved innlogging.",
+        details: String(error),
+      },
       { status: 500 }
     );
   }
